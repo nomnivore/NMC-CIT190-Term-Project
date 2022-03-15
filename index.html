@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Arkade - Home</title>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js' integrity='sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==' crossorigin='anonymous'></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&family=Bungee&family=Orbitron&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js" defer></script>
+
+    <!-- Audience: Word/Logic game enthusiasts. -->
+    <!-- Design Layout: Multi "Page" Scroll - each page is at least as tall as the viewport.
+                Individual pages use a variety of flexbox and grid layout based on their needs. -->
+    <!-- Color Scheme: Dark theme with neon-style highlights in a square harmony relation. -->
+  </head>
+  <body>
+    <nav class="nav-hidden">
+      <div class="branding">
+        <a href="./" class="title">The Arkade</a>
+      </div>
+      <div class="nav-links">
+        <a href="#home" data-text="Home">Home</a>
+        <a href="#games" data-text="Games">Games</a>
+        <a href="#about" data-text="About">About</a>
+      </div>
+    </nav>
+
+    <div id="home" class="page">
+      <div class="hero-bg"></div>
+
+      <div class="hero-container">
+        <div class="hero-overline">Welcome to</div>
+        <div class="hero-text">The Arkade</div>
+        <a href="#games" class="hero-cta">Enter</a>
+      </div>
+      
+      <div class="hero-nav nav-links">
+        <a href="#home" data-text="Home">Home</a>
+        <a href="#games" data-text="Games">Games</a>
+        <a href="#about" data-text="About">About</a>
+      </div>
+    </div>
+
+    <div id="games" class="page">
+      <h2>Games</h2>
+      <div class="games-container">
+        <div class="game-card sudoku">
+          <h3 class="game-title">
+            Sudoku
+          </h3>
+          <div class="game-body">
+            <p class="game-desc">
+              Fill a 9x9 grid with digits so that each row,
+              column, and 3x3 subgrid contains all of the digits
+              from 1 to 9 without any repeating sequences.
+            </p>
+            <a href="./sudoku/" class="game-cta">
+              <img src="./media/play_arrow_white_24dp.svg" alt="Play Icon">
+              Play
+            </a>
+          </div>
+          <div class="game-links">
+            <a href="./sudoku/readme.txt">readme.txt</a>
+          </div>
+        </div>
+        <div class="game-card slidepic">
+          <h3 class="game-title">
+            SlidingPic
+          </h3>
+          <div class="game-body">
+            <p class="game-desc">
+              Slide pieces of a picture divided into a 4x4 grid
+              back into the correct order.
+            </p>
+            <a href="./slidingpic/" class="game-cta">
+              <img src="./media/play_arrow_white_24dp.svg" alt="Play Icon">
+              Play
+            </a>
+          </div>
+          <div class="game-links">
+            <a href="./slidingpic/readme.txt">readme.txt</a>
+          </div>
+        </div>
+        <div class="game-card canvas">
+          <h3 class="game-title">
+            2D Runner
+          </h3>
+          <div class="game-body">
+            <p class="game-desc">
+              Shift between 3 lanes and dodge the oncoming obstacles. How far can
+              you get without getting hit?
+            </p>
+            <a href="./runner/" class="game-cta">
+              <img src="./media/play_arrow_white_24dp.svg" alt="Play Icon">
+              Play
+            </a>
+          </div>
+          <div class="game-links">
+            <a href="./runner/readme.txt">readme.txt</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="about" class="page">
+      <h2>About The Arkade</h2>
+      <p class="about-text">
+        The Arkade is a HTML, CSS, and JavaScript/JQuery project where the objective is to create
+        3 games using JQuery and HTML5 Canvas. It was made for the CIT190 Term Project at NMC.
+
+        <br><br>
+
+
+        &copy; Kyle Warner 2022
+        <br>
+        Do not reproduce or distribute this software without permission.
+      </p>
+      <a href="./readme.txt" class="link">
+        readme.txt version
+      </a>
+    </div>
+    
+  </body>
+</html>
