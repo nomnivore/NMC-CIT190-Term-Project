@@ -1,13 +1,9 @@
 class SdApi {
-
   host = "https://sugoku.herokuapp.com";
 
+  constructor() {}
 
-  constructor(){
-    
-  }
-
-  getPuzzle(difficulty="random") {
+  getPuzzle(difficulty = "random") {
     let url = `${this.host}/board?difficulty=${difficulty}`;
     let puzzle;
     $.ajax({
@@ -16,14 +12,14 @@ class SdApi {
       async: false,
       success: (data) => {
         puzzle = data;
-      }
+      },
     });
 
     return puzzle.board;
   }
 
   getSolution(puzzle) {
-    let url = `${this.host}/solve`
+    let url = `${this.host}/solve`;
     let solution;
     $.ajax({
       url: url,
@@ -32,7 +28,7 @@ class SdApi {
       async: false,
       success: (data) => {
         solution = data;
-      }
+      },
     });
 
     return solution.solution;

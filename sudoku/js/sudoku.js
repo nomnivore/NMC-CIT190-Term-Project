@@ -14,9 +14,7 @@ $(function () {
   showNavOnScroll();
 });
 
-
 class Sudoku {
-
   api;
   $grid = $(".sd-grid");
   $notesBtn = $("#toggle-notes");
@@ -41,7 +39,6 @@ class Sudoku {
       }
     }
     this.$grid.append(boardString);
-
 
     // DOM properties
     this.$cells = this.$grid.find(".sd-cell");
@@ -74,21 +71,20 @@ class Sudoku {
         $btn.addClass(".sd-pad-clear");
       }
       $btn.on("click", function () {
-        if (!game.$currentCell)
-          return;
+        if (!game.$currentCell) return;
         const $input = game.$currentCell.find("input");
         // spoof the event
         // ? hacky code? not sure...
         const event = {
           originalEvent: {
-            data: val
+            data: val,
           },
-          preventDefault: function () {}
+          preventDefault: function () {},
         };
         game.#beforeInputUpdate($input, event);
       });
       $(".sd-numpad").append($btn);
-    })
+    });
   }
 
   #addEventListeners() {
@@ -101,22 +97,22 @@ class Sudoku {
     });
 
     // game buttons
-    this.$notesBtn.on("click", function() {
+    this.$notesBtn.on("click", function () {
       game.toggleNoteMode();
-    })
+    });
 
-    this.$newGameBtn.on("click", function() {
+    this.$newGameBtn.on("click", function () {
       const difficulty = game.$difficultySelect.val();
-      const $btn = $(this)
+      const $btn = $(this);
       // disabling avoids double-clicks during api call
       $btn.attr("disabled");
       game.newGame(difficulty);
       $btn.removeAttr("disabled");
-    })
+    });
 
-    $("#reset").on("click", function() {
+    $("#reset").on("click", function () {
       game.reset();
-    })
+    });
 
     // de-select when clicking outside of game
     $(document).on("click", function (e) {
@@ -142,13 +138,13 @@ class Sudoku {
     //   game.#afterInputUpdate(this);
     // });
 
-    $inputs.on("beforeinput", function(event){
+    $inputs.on("beforeinput", function (event) {
       game.#beforeInputUpdate(this, event);
-    })
+    });
   }
 
   #beforeInputUpdate(input, event) {
-    const $input = (input instanceof jQuery? input : $(input));
+    const $input = input instanceof jQuery ? input : $(input);
     const $cell = $input.parent();
     const val = event.originalEvent.data;
     // different functionality based on if note mode is enabled
@@ -189,7 +185,6 @@ class Sudoku {
     // clear hints within range of cell
     this.clearRelatedNotes($cell);
 
-
     // check for duplicates
     this.checkCellDuplicates($cell);
 
@@ -204,7 +199,7 @@ class Sudoku {
     return {
       $row: this.$getRow($cell),
       $col: this.$getCol($cell),
-      $region: this.$getRegion($cell)
+      $region: this.$getRegion($cell),
     };
   }
 
@@ -225,7 +220,6 @@ class Sudoku {
   //   $row.removeClass("error");
   //   $col.removeClass("error");
   //   $region.removeClass("error");
-
 
   //   const rowDupes = this.#arrayHasDuplicates(this.getValues($row));
   //   const colDupes = this.#arrayHasDuplicates(this.getValues($col));
@@ -264,13 +258,12 @@ class Sudoku {
     [rows, cols, regions].forEach((cellSet) => {
       cellSet.forEach(($cells) => {
         const cellsDupes = this.#arrayHasDuplicates(this.getValues($cells));
-        if (cellsDupes)
-          dupes.push([$cells, cellsDupes]);
+        if (cellsDupes) dupes.push([$cells, cellsDupes]);
       });
     });
 
     dupes.forEach(([$cells, vals]) => {
-      $cells.each(function() {
+      $cells.each(function () {
         const $cell = $(this);
         if (vals.includes($cell.find("input").val())) {
           $cell.addClass("error");
@@ -282,15 +275,14 @@ class Sudoku {
     this.hasDupes = hasDupes;
   }
 
-
   #arrayHasDuplicates(arr) {
-    return arr.filter((num, index, array) => array.indexOf(num) !== index)
+    return arr.filter((num, index, array) => array.indexOf(num) !== index);
   }
 
-  toggleCellNote($cells, val, desired=undefined) {
+  toggleCellNote($cells, val, desired = undefined) {
     // this function accepts one or more cells, a value or "all"
     const game = this;
-    $cells.each(function(_, cell) {
+    $cells.each(function (_, cell) {
       const $cell = $(cell);
       let $notes;
       if (val == "all") {
@@ -354,9 +346,9 @@ class Sudoku {
 
     if (!val) return;
 
-    const sameNums = this.$cells.filter(function() {
+    const sameNums = this.$cells.filter(function () {
       return $(this).find("input").val() == val;
-    })
+    });
 
     sameNums.addClass("num-focused");
   }
@@ -409,32 +401,31 @@ class Sudoku {
   getValuesWithZero($cells) {
     let values = [];
     let $inputs = $cells.find("input");
-    $inputs.each(function() {
+    $inputs.each(function () {
       const val = $(this).val();
       if (val != "") {
         values.push($(this).val());
       } else {
         values.push("0");
       }
-    })
+    });
     return values;
   }
 
   getValues($cells) {
     const values = this.getValuesWithZero($cells);
-    return values.filter(val => val != 0);
+    return values.filter((val) => val != 0);
   }
 
   setValues($cells, values) {
     let $inputs = $cells.find("input");
-    $inputs.each(function(i) {
+    $inputs.each(function (i) {
       // ignore zero values
-      if (values[i] != 0)
-        $(this).val(values[i]);
-    })
+      if (values[i] != 0) $(this).val(values[i]);
+    });
   }
 
-  newGame(difficulty="random") {
+  newGame(difficulty = "random") {
     // reset the game state
     this.reset();
     // generate a new board
@@ -450,11 +441,11 @@ class Sudoku {
     this.isComplete = false;
     this.startTimer();
 
-    console.log(this.api.getSolution(this.toNumArray()))
+    // console.log(this.api.getSolution(this.toNumArray()))
   }
 
   lockFilledCells() {
-    this.$cells.each(function() {
+    this.$cells.each(function () {
       const $cell = $(this);
       const val = $cell.find("input").val();
       if (val != "") {
@@ -482,8 +473,8 @@ class Sudoku {
   toNumArray() {
     let arr = [];
     this.getRows().forEach(($row) => {
-      arr.push(this.getValuesWithZero($row).map(v => parseInt(v)));
-    })
+      arr.push(this.getValuesWithZero($row).map((v) => parseInt(v)));
+    });
     return arr;
   }
 
@@ -507,7 +498,7 @@ class Sudoku {
     return filled;
   }
 
-  setMsg(msg="") {
+  setMsg(msg = "") {
     this.$msgSpan.text(msg);
   }
 
@@ -525,7 +516,6 @@ class Sudoku {
     this.timeElapsed = `${minutes}:${seconds}`;
   }
 }
-
 
 const game = new Sudoku();
 
