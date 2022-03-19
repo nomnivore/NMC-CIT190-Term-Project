@@ -35,7 +35,7 @@ class Sudoku {
     for (let y = 0; y < 9; y++) {
       for (let x = 0; x < 9; x++) {
         let region = Math.floor(y / 3) * 3 + Math.floor(x / 3);
-        boardString += `<div class="sd-cell" data-x=${x} data-y=${y} data-region=${region} data-has-notes="false"><input type="text" maxLength="1"></div>`;
+        boardString += `<div class="sd-cell" data-x=${x} data-y=${y} data-region=${region} data-has-notes="false"><input type="text" maxLength="1" inputmode="none"></div>`;
       }
     }
     this.$grid.append(boardString);
