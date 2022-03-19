@@ -437,7 +437,7 @@ class Sudoku {
     // lock the board
     this.lockFilledCells();
 
-    this.setMsg("Ready... go!");
+    this.setMsg();
     this.isComplete = false;
     this.startTimer();
 
