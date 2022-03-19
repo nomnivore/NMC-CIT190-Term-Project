@@ -131,6 +131,7 @@ class Sudoku {
     const $inputs = this.$cells.find("input");
     $inputs.on("click", function () {
       $(this).select();
+      game.selectCell($(this).parent());
     });
 
     // ! due to the nature of the beforeInput listener, this doesn't actually run.
