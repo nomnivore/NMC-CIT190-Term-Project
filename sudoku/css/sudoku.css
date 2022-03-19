@@ -1,0 +1,211 @@
+:root {
+  --bg-color: hsl(134, 37%, 22%);
+  --button-color: hsl(134, 37%, 35%);
+  --button-hover-color: hsl(134, 37%, 40%);
+  --border-color: hsl(134, 37%, 15%);
+}
+
+/* classes namespaced to sd- */
+
+/* ? width of borders: 18px */
+
+.page#game {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh + 5px);
+}
+
+.sd-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: auto;
+  padding-bottom: 1rem;
+
+  max-width: min(100vw, 766px);
+  /* this causes all supporting elements to be the same size as the board */
+}
+
+
+.sd-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.sd-btn {
+  font-size: 1rem;
+  font-family: "Orbitron", sans-serif;
+  padding: .35rem .8rem;
+  border-radius: .25rem;
+  background: var(--border-color);
+  color: white;
+  border: 2px solid var(--button-color);
+  cursor: pointer;
+  box-shadow: 0 6px var(--bg-color);
+  transition: transform 0.1s ease-in-out;
+  margin: 0;
+  outline: none;
+}
+
+.sd-btn[disabled] {
+  cursor: default;
+  opacity: 0.7;
+  filter: grayscale(55%);
+}
+
+.sd-btn.enabled, .sd-btn:active {
+  /* font-weight: bold; */
+  background: var(--button-color);
+  box-shadow: 0 0 12px var(--button-color), 0 5px var(--bg-color);
+  transform: translateY(2px);
+}
+
+.sd-grid {
+  display: grid;
+  grid-template-rows: repeat(9, 1fr);
+  grid-template-columns: repeat(9, 1fr);
+  border: 3px solid var(--bg-color);
+}
+
+.sd-cell {
+  background: hsl(224, 27%, 13%);
+  border: 1px solid var(--bg-color);
+  /* font-size: 2.5rem; */
+  font-size: min(calc(7.5vw - 1.5px), 2.5rem);
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1;
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "cell";
+}
+
+.sd-cell input {
+  grid-area: cell;
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  height: 100%;
+  font-size: inherit;
+  line-height: 1;
+  caret-color: transparent;
+  text-align: center;
+  color: inherit;
+  vertical-align: middle;
+  padding: 0;
+}
+
+.sd-cell[data-y="2"],
+.sd-cell[data-y="5"] {
+  border-bottom: 3px solid var(--bg-color);
+}
+
+.sd-cell[data-x="2"],
+.sd-cell[data-x="5"] {
+  border-right: 3px solid var(--bg-color);
+}
+
+.sd-cell.selected {
+  /* border: 3px solid var(--button-hover-color); */
+  box-shadow: inset 0 0 3px 2px hsl(9, 37%, 35%);
+}
+
+.sd-cell input::selection {
+  background: transparent !important;
+}
+
+.sd-cell[data-locked="true"] input {
+  font-weight: bold;
+  color: rgb(166, 190, 172);
+}
+
+.sd-cell.highlight {
+  background: hsl(210, 27%, 15%);
+}
+
+.sd-cell.num-focused:not(.selected) {
+  color: hsl(66, 89%, 64%);
+}
+
+.sd-cell.error:not([data-locked="true"]) {
+  color: rgb(255, 96, 96);
+}
+
+.sd-cell .sd-note-grid {
+  grid-area: cell;
+  order: -1;
+  font-size: .4em;
+  display: grid;
+  text-align: center;
+  padding: 3px;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "a b c"
+    "d e f"
+    "g h i";
+}
+
+/* .note-mode .sd-note-grid {
+  order: 1;
+} */
+
+.sd-cell .sd-note-grid * {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-cell .sd-note-grid .show {
+  display: flex;
+}
+
+.sd-note-1 {
+  grid-area: a;
+}
+.sd-note-2 {
+  grid-area: b;
+}
+.sd-note-3 {
+  grid-area: c;
+}
+.sd-note-4 {
+  grid-area: d;
+}
+.sd-note-5 {
+  grid-area: e;
+}
+.sd-note-6 {
+  grid-area: f;
+}
+.sd-note-7 {
+  grid-area: g;
+}
+.sd-note-8 {
+  grid-area: h;
+}
+.sd-note-9 {
+  grid-area: i;
+}
+
+
+.sd-numpad {
+  /* display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  grid-auto-flow: row; */
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem .5rem;
+  max-width: 100%;
+}
+
+.sd-message-container {
+  display: flex;
+  max-width: 100%;
+  min-height: 1.4rem;
+  font-size: 1.4rem;
+}

@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Bungee&family=Orbitron&family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/index.css"> <!-- game page will extend the base stylesheet -->
+    <link rel="stylesheet" href="./css/sudoku.css">
+    <script src="./js/sd-api.js"></script>
+    <script src="./js/sudoku.js" defer></script>
   </head>
   <body>
     <nav class="sudoku" style="background-color: var(--bg-color);">
@@ -19,7 +22,7 @@
       </div>
       <div class="nav-links">
         <a href="#instructions">Instructions</a>
-        <a href="#game">Sudoku</a>
+        <a href="#sudoku">Sudoku</a>
       </div>
     </nav>
 
@@ -59,9 +62,34 @@
     </div>
 
     <div id="game" class="page">
-      <h2>Sudoku</h2>
+      <h2 id="sudoku">Sudoku</h2>
 
-      <p class="coming-soon">Coming soon!</p>
+      <!-- <p class="coming-soon">Coming soon!</p> -->
+      <div class="sd-game">
+        <div class="sd-controls">
+          <div>
+            <button class="sd-btn" id="new-game">New Game</button>
+            <select name="difficulty" id="difficulty"class="sd-btn">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+              <option value="random" selected>Random</option>
+            </select>
+          </div>
+          <button class="sd-btn" id="reset">Reset</button>
+        </div>
+        <div class="sd-message-container">
+          <span class="sd-message">
+
+          </span>
+        </div>
+        <div class="sd-grid"> 
+        </div>
+        <div class="sd-numpad"></div>
+        <div class="sd-controls">
+          <button class="sd-btn" id="toggle-notes">Notes</button>
+        </div>
+      </div>
     </div>
   </body>
 </html>
