@@ -126,7 +126,7 @@
   background: hsl(210, 27%, 15%);
 }
 
-.sd-cell.num-focused:not(.selected) {
+.sd-cell.num-focused:not(.selected) input {
   color: hsl(66, 89%, 64%);
 }
 
