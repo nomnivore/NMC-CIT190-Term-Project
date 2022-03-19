@@ -200,7 +200,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: .8rem .5rem;
-  max-width: 100%;
+  max-width: 766px;
+  justify-content: center;
+}
+
+.sd-numpad .sd-btn {
+  font-size: 1.1rem;
+  /* width: 2.8em; */
+  width: 16%;
 }
 
 .sd-message-container {
