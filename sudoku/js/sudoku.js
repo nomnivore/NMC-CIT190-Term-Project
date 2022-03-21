@@ -35,7 +35,7 @@ class Sudoku {
     for (let y = 0; y < 9; y++) {
       for (let x = 0; x < 9; x++) {
         let region = Math.floor(y / 3) * 3 + Math.floor(x / 3);
-        boardString += `<div class="sd-cell" data-x=${x} data-y=${y} data-region=${region} data-has-notes="false"><input type="text" maxLength="1" inputmode="none"></div>`;
+        boardString += `<div class="sd-cell" data-x=${x} data-y=${y} data-region=${region} data-has-notes="false"><div class="sd-input" tabindex=0 onclick=""></div></div>`;
       }
     }
     this.$grid.append(boardString);
@@ -72,16 +72,8 @@ class Sudoku {
       }
       $btn.on("click", function () {
         if (!game.$currentCell) return;
-        const $input = game.$currentCell.find("input");
-        // spoof the event
-        // ? hacky code? not sure...
-        const event = {
-          originalEvent: {
-            data: val,
-          },
-          preventDefault: function () {},
-        };
-        game.#beforeInputUpdate($input, event);
+        const $input = game.$currentCell.find(".sd-input");
+        game.#beforeInputUpdate($input, val);
       });
       $(".sd-numpad").append($btn);
     });
@@ -119,7 +111,8 @@ class Sudoku {
       const $clicked = $(e.target);
       if (
         !$clicked.is(".sd-cell") &&
-        !$clicked.is(".sd-cell input") &&
+        !$clicked.is(".sd-cell .sd-input") &&
+        !$clicked.is(".sd-cell .sd-note-grid") &&
         !$clicked.is(".sd-btn") &&
         !$clicked.is(".sd-numpad")
       ) {
@@ -127,29 +120,62 @@ class Sudoku {
       }
     });
 
-    // auto-select text when cell is focused or changed
-    const $inputs = this.$cells.find("input");
-    $inputs.on("click", function () {
-      $(this).select();
-      game.selectCell($(this).parent());
-    });
+    // *# IOS issue fix! the 'click' event fires strangely on ios.
+    this.$cells.on("click", "*", function () {
+      game.selectCell($(this).closest(".sd-cell"));
+    })
 
-    // ! due to the nature of the beforeInput listener, this doesn't actually run.
-    // $inputs.on("input", function () {
-    //   game.#afterInputUpdate(this);
-    // });
-
-    $inputs.on("beforeinput", function (event) {
-      game.#beforeInputUpdate(this, event);
+    // listen for keyboard input
+    $(document).on("keydown", function (e) {
+      game.#keyPressed(e);
     });
   }
 
-  #beforeInputUpdate(input, event) {
+  #keyPressed(event) {
+    const $cell = this.$currentCell;
+    if (!$cell) return;
+
+    const key = event.key;
+    const $input = $cell.find(".sd-input");
+
+    if (this.allowedInputs.includes(key))
+      this.#beforeInputUpdate($input, key);
+    else if (["Backspace", "Delete", "0"].includes(key))
+      this.#beforeInputUpdate($input, "0");
+    else if (key == "ArrowUp") {
+      const $newCell = this.$grid.find(`.sd-cell[data-x=${$cell.attr("data-x")}][data-y=${parseInt($cell.attr("data-y")) - 1}]`);
+      if ($newCell.length) {
+        this.selectCell($newCell);
+        event.preventDefault();
+      }
+    } else if (key == "ArrowDown") {
+      const $newCell = this.$grid.find(`.sd-cell[data-x=${$cell.attr("data-x")}][data-y=${parseInt($cell.attr("data-y")) + 1}]`);
+      if ($newCell.length) {
+        this.selectCell($newCell);
+        event.preventDefault();
+      }
+    } else if (key == "ArrowLeft") {
+      const $newCell = this.$grid.find(`.sd-cell[data-x=${parseInt($cell.attr("data-x")) - 1}][data-y=${$cell.attr("data-y")}]`);
+      if ($newCell.length) {
+        this.selectCell($newCell);
+        event.preventDefault();
+      }
+    } else if (key == "ArrowRight") {
+      const $newCell = this.$grid.find(`.sd-cell[data-x=${parseInt($cell.attr("data-x")) + 1}][data-y=${$cell.attr("data-y")}]`);
+      if ($newCell.length) {
+        this.selectCell($newCell);
+        event.preventDefault();
+      }
+    } else if (key == "n") {
+      this.toggleNoteMode();
+    }
+  }
+
+  #beforeInputUpdate(input, value) {
     const $input = input instanceof jQuery ? input : $(input);
     const $cell = $input.parent();
-    const val = event.originalEvent.data;
+    const val = value;
     // different functionality based on if note mode is enabled
-    event.preventDefault();
     if ($cell.attr("data-locked") == "true" || this.isComplete) return;
     if (this.isNoteMode()) {
       // * note input mode
@@ -157,22 +183,21 @@ class Sudoku {
       if (this.allowedInputs.includes(val)) {
         this.toggleCellNote($cell, val);
         if (this.cellHasNotes($cell)) {
-          $input.val("");
+          $input.text("");
         }
       }
     } else {
       // * value input mode
       // if the value is an allowed input, set the input value
       if (this.allowedInputs.includes(val) || val == null) {
-        $input.val(val);
+        $input.text(val);
         this.toggleCellNote($cell, "all", false);
         this.#afterInputUpdate($input);
       } else if (val == "0") {
-        $input.val("");
+        $input.text("");
         this.toggleCellNote($cell, "all", false);
       } else {
         // deny invalid inputs
-        event.preventDefault();
       }
     }
   }
@@ -190,7 +215,7 @@ class Sudoku {
     this.checkCellDuplicates($cell);
 
     // highlight same-numbers
-    this.focusNums($input.val());
+    this.focusNums($input.text());
 
     // check if game is done
     this.checkGameComplete();
@@ -205,7 +230,7 @@ class Sudoku {
   }
 
   clearRelatedNotes($cell) {
-    const val = $cell.find("input").val();
+    const val = $cell.find(".sd-input").text();
     const { $row, $col, $region } = this.#getRelatedCells($cell);
 
     this.toggleCellNote($row, val, false);
@@ -214,7 +239,7 @@ class Sudoku {
   }
 
   // checkCellDuplicates($cell) {
-  //   const val = $cell.find("input").val();
+  //   const val = $cell.find(".sd-input").text();
   //   const { $row, $col, $region } = this.#getRelatedCells($cell);
 
   //   // remove related error classes
@@ -236,7 +261,7 @@ class Sudoku {
   //     if (vals) {
   //       $cells.each(function() {
   //         const $cell = $(this);
-  //         if (vals.includes($cell.find("input").val()))
+  //         if (vals.includes($cell.find(".sd-input").text()))
   //           $cell.addClass("error");
   //       })
   //     }
@@ -266,7 +291,7 @@ class Sudoku {
     dupes.forEach(([$cells, vals]) => {
       $cells.each(function () {
         const $cell = $(this);
-        if (vals.includes($cell.find("input").val())) {
+        if (vals.includes($cell.find(".sd-input").text())) {
           $cell.addClass("error");
           hasDupes = true;
         }
@@ -336,7 +361,7 @@ class Sudoku {
 
     [$row, $col, $region].forEach(($cells) => $cells.addClass("highlight"));
 
-    const val = $cell.find("input").val();
+    const val = $cell.find(".sd-input").text();
 
     this.focusNums(val);
   }
@@ -348,7 +373,7 @@ class Sudoku {
     if (!val) return;
 
     const sameNums = this.$cells.filter(function () {
-      return $(this).find("input").val() == val;
+      return $(this).find(".sd-input").text() == val;
     });
 
     sameNums.addClass("num-focused");
@@ -401,11 +426,11 @@ class Sudoku {
 
   getValuesWithZero($cells) {
     let values = [];
-    let $inputs = $cells.find("input");
+    let $inputs = $cells.find(".sd-input");
     $inputs.each(function () {
-      const val = $(this).val();
+      const val = $(this).text();
       if (val != "") {
-        values.push($(this).val());
+        values.push($(this).text());
       } else {
         values.push("0");
       }
@@ -419,10 +444,10 @@ class Sudoku {
   }
 
   setValues($cells, values) {
-    let $inputs = $cells.find("input");
+    let $inputs = $cells.find(".sd-input");
     $inputs.each(function (i) {
       // ignore zero values
-      if (values[i] != 0) $(this).val(values[i]);
+      if (values[i] != 0) $(this).text(values[i]);
     });
   }
 
@@ -448,7 +473,7 @@ class Sudoku {
   lockFilledCells() {
     this.$cells.each(function () {
       const $cell = $(this);
-      const val = $cell.find("input").val();
+      const val = $cell.find(".sd-input").text();
       if (val != "") {
         $cell.attr("data-locked", true);
       }
@@ -460,7 +485,7 @@ class Sudoku {
   }
 
   emptyAllCells() {
-    this.$cells.find("input").val("");
+    this.$cells.find(".sd-input").text("");
   }
 
   reset() {
@@ -489,9 +514,9 @@ class Sudoku {
 
   isBoardFilled() {
     // check if all inputs are filled
-    // const $inputs = this.$cells.find("input");
+    // const $inputs = this.$cells.find(".sd-input");
     // const $filledInputs = $inputs.filter(function() {
-    //   return $(this).val() != "";
+    //   return $(this).text() != "";
     // })
     // return $filledInputs.length == $inputs.length;
     const arr = this.toNumArray();
@@ -521,3 +546,8 @@ class Sudoku {
 const game = new Sudoku();
 
 game.newGame();
+
+game.$cells.each(function() {
+  const ip = $(this).find(".sd-input");
+  if (ip.text() == "") {}
+})
