@@ -123,7 +123,7 @@ class Sudoku {
     // *# IOS issue fix! the 'click' event fires strangely on ios.
     this.$cells.on("click", "*", function () {
       game.selectCell($(this).closest(".sd-cell"));
-    })
+    });
 
     // listen for keyboard input
     $(document).on("keydown", function (e) {
@@ -138,30 +138,45 @@ class Sudoku {
     const key = event.key;
     const $input = $cell.find(".sd-input");
 
-    if (this.allowedInputs.includes(key))
-      this.#beforeInputUpdate($input, key);
+    if (this.allowedInputs.includes(key)) this.#beforeInputUpdate($input, key);
     else if (["Backspace", "Delete", "0"].includes(key))
       this.#beforeInputUpdate($input, "0");
     else if (key == "ArrowUp") {
-      const $newCell = this.$grid.find(`.sd-cell[data-x=${$cell.attr("data-x")}][data-y=${parseInt($cell.attr("data-y")) - 1}]`);
+      const $newCell = this.$grid.find(
+        `.sd-cell[data-x=${$cell.attr("data-x")}][data-y=${
+          parseInt($cell.attr("data-y")) - 1
+        }]`
+      );
       if ($newCell.length) {
         this.selectCell($newCell);
         event.preventDefault();
       }
     } else if (key == "ArrowDown") {
-      const $newCell = this.$grid.find(`.sd-cell[data-x=${$cell.attr("data-x")}][data-y=${parseInt($cell.attr("data-y")) + 1}]`);
+      const $newCell = this.$grid.find(
+        `.sd-cell[data-x=${$cell.attr("data-x")}][data-y=${
+          parseInt($cell.attr("data-y")) + 1
+        }]`
+      );
       if ($newCell.length) {
         this.selectCell($newCell);
         event.preventDefault();
       }
     } else if (key == "ArrowLeft") {
-      const $newCell = this.$grid.find(`.sd-cell[data-x=${parseInt($cell.attr("data-x")) - 1}][data-y=${$cell.attr("data-y")}]`);
+      const $newCell = this.$grid.find(
+        `.sd-cell[data-x=${
+          parseInt($cell.attr("data-x")) - 1
+        }][data-y=${$cell.attr("data-y")}]`
+      );
       if ($newCell.length) {
         this.selectCell($newCell);
         event.preventDefault();
       }
     } else if (key == "ArrowRight") {
-      const $newCell = this.$grid.find(`.sd-cell[data-x=${parseInt($cell.attr("data-x")) + 1}][data-y=${$cell.attr("data-y")}]`);
+      const $newCell = this.$grid.find(
+        `.sd-cell[data-x=${
+          parseInt($cell.attr("data-x")) + 1
+        }][data-y=${$cell.attr("data-y")}]`
+      );
       if ($newCell.length) {
         this.selectCell($newCell);
         event.preventDefault();
@@ -546,8 +561,3 @@ class Sudoku {
 const game = new Sudoku();
 
 game.newGame();
-
-game.$cells.each(function() {
-  const ip = $(this).find(".sd-input");
-  if (ip.text() == "") {}
-})
