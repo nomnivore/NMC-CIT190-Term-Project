@@ -34,6 +34,7 @@
 }
 
 .sd-btn {
+  -webkit-appearance: none;
   font-size: 1rem;
   font-family: "Orbitron", sans-serif;
   padding: .35rem .8rem;
@@ -46,6 +47,13 @@
   transition: transform 0.1s ease-in-out;
   margin: 0;
   outline: none;
+}
+
+select.sd-btn {
+  background-image: url("../media/outline_arrow_drop_down_white_24dp.png");
+  background-repeat: no-repeat;
+  background-position: right .25em center;
+  padding-right: 2em;
 }
 
 .sd-btn[disabled] {
@@ -80,9 +88,10 @@
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas: "cell";
+  cursor: pointer;
 }
 
-.sd-cell input {
+.sd-cell .sd-input {
   grid-area: cell;
   outline: none;
   background: transparent;
@@ -91,11 +100,12 @@
   height: 100%;
   font-size: inherit;
   line-height: 1;
-  caret-color: transparent;
-  text-align: center;
   color: inherit;
-  vertical-align: middle;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .sd-cell[data-y="2"],
@@ -113,11 +123,12 @@
   box-shadow: inset 0 0 3px 2px hsl(9, 37%, 35%);
 }
 
-.sd-cell input::selection {
+/* ! unneeded now? */
+/* .sd-cell .sd-input::selection {
   background: transparent !important;
-}
+} */
 
-.sd-cell[data-locked="true"] input {
+.sd-cell[data-locked="true"] .sd-input {
   font-weight: bold;
   color: rgb(166, 190, 172);
 }
@@ -126,7 +137,7 @@
   background: hsl(210, 27%, 15%);
 }
 
-.sd-cell.num-focused:not(.selected) input {
+.sd-cell.num-focused:not(.selected) .sd-input {
   color: hsl(66, 89%, 64%);
 }
 
