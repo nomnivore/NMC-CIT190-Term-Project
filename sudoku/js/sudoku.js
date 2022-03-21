@@ -552,8 +552,15 @@ class Sudoku {
     const timeElapsed = performance.now() - this.startTime; // in seconds
 
     // convert to minutes:seconds
-    const minutes = Math.floor(timeElapsed / 60000);
-    const seconds = Math.floor((timeElapsed % 60000) / 1000);
+    const minutes = Math.floor(timeElapsed / 60000).toLocaleString("en-US", {
+      minimumIntegerDigits: 2,
+    });
+    const seconds = Math.floor((timeElapsed % 60000) / 1000).toLocaleString(
+      "en-US",
+      {
+        minimumIntegerDigits: 2,
+      }
+    );
     this.timeElapsed = `${minutes}:${seconds}`;
   }
 }
