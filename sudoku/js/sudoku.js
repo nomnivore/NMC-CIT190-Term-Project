@@ -50,6 +50,8 @@ class Sudoku {
     this.#addEventListeners();
   }
 
+  // DOM ELEMENT GENERATION
+
   #addNoteDOM() {
     this.$cells.each(function () {
       const $cell = $(this);
@@ -78,6 +80,8 @@ class Sudoku {
       $(".sd-numpad").append($btn);
     });
   }
+
+  // EVENT LISTENERS
 
   #addEventListeners() {
     // listen for cell selections
@@ -120,7 +124,7 @@ class Sudoku {
       }
     });
 
-    // *# IOS issue fix! the 'click' event fires strangely on ios.
+    // * IOS issue fix! the 'click' event fires strangely on ios.
     this.$cells.on("click", "*", function () {
       game.selectCell($(this).closest(".sd-cell"));
     });
@@ -236,6 +240,8 @@ class Sudoku {
     this.checkGameComplete();
   }
 
+  // GAME & UI LOGIC
+
   #getRelatedCells($cell) {
     return {
       $row: this.$getRow($cell),
@@ -252,36 +258,6 @@ class Sudoku {
     this.toggleCellNote($col, val, false);
     this.toggleCellNote($region, val, false);
   }
-
-  // checkCellDuplicates($cell) {
-  //   const val = $cell.find(".sd-input").text();
-  //   const { $row, $col, $region } = this.#getRelatedCells($cell);
-
-  //   // remove related error classes
-  //   $row.removeClass("error");
-  //   $col.removeClass("error");
-  //   $region.removeClass("error");
-
-  //   const rowDupes = this.#arrayHasDuplicates(this.getValues($row));
-  //   const colDupes = this.#arrayHasDuplicates(this.getValues($col));
-  //   const regionDupes = this.#arrayHasDuplicates(this.getValues($region));
-
-  //   const dupes = [
-  //     [$row, rowDupes],
-  //     [$col, colDupes],
-  //     [$region, regionDupes]
-  //   ];
-
-  //   dupes.forEach(([$cells, vals]) => {
-  //     if (vals) {
-  //       $cells.each(function() {
-  //         const $cell = $(this);
-  //         if (vals.includes($cell.find(".sd-input").text()))
-  //           $cell.addClass("error");
-  //       })
-  //     }
-  //   })
-  // }
 
   checkCellDuplicates() {
     // clear error classes
@@ -394,6 +370,8 @@ class Sudoku {
     sameNums.addClass("num-focused");
   }
 
+  // JQUERY HELPERS
+
   $getRow(num) {
     if (num instanceof jQuery) {
       num = num.data("y");
@@ -439,6 +417,8 @@ class Sudoku {
     return regions;
   }
 
+  // VALUE GET/SET
+
   getValuesWithZero($cells) {
     let values = [];
     let $inputs = $cells.find(".sd-input");
@@ -465,6 +445,8 @@ class Sudoku {
       if (values[i] != 0) $(this).text(values[i]);
     });
   }
+
+  // GAME RESET & INIT
 
   newGame(difficulty = "random") {
     // reset the game state
@@ -564,6 +546,8 @@ class Sudoku {
     this.timeElapsed = `${minutes}:${seconds}`;
   }
 }
+
+// instantiate the game
 
 const game = new Sudoku();
 
