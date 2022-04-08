@@ -41,7 +41,14 @@
           <p>
             Click on a piece to move it into the empty space.
             <br>
-            If you get stuck, you can click "Reset" to start over.
+            If you get stuck, you can click "Reset" to randomize and start over again.
+            <br><br>
+            Use your own pictures! Upload a PNG or JPG file using the button below the grid,
+            and the game will turn it into a puzzle. Square ratio pictures will work best.
+            <br><br>
+            The "Show Hints" button can be used to toggle index numbers for each piece. You can
+            use this to help you solve the puzzle, by rearranging the pieces in numeric order,
+            left to right then top to bottom.
           </p>
         </div>
         <div class="section">
@@ -53,13 +60,19 @@
     <div id="game" class="page">
       <h2>SlidingPic</h2>
 
-      <p class="coming-soon">Coming soon!</p>
-
       <div class="sp-game">
+        <div class="sp-controls">
+          <button class="sp-btn" id="sp-hint">Show Hints</button>
+        </div>
         <div class="sp-grid-wrapper">
           <div class="sp-overlay">shuffling...</div>
-          <div class="sp-grid">
-          </div>
+          <div class="sp-grid"></div>
+
+        </div>
+        <div class="sp-upload-control">
+          <label class="sp-btn" for="sp-puzzleImage">Upload custom image</label>
+          <input type="file" id="sp-puzzleImage" name="puzzleImage" accept="image/png, image/jpeg">
+          <button class="sp-btn" id="sp-reset">Reset</button>
         </div>
       </div>
     </div>

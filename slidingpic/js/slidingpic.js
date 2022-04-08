@@ -1,3 +1,5 @@
+
+
 class SlidingPic {
   $emptyCell;
   $cells;
@@ -5,29 +7,75 @@ class SlidingPic {
   isComplete = false;
   allowClicks = true; // set to false during sliding to prevent double clicks
   $overlay = $(".sp-overlay");
+  gridCols = 4;
+  defaultImageUrl = "test.jpg";
+  imageFileType = "image/jpeg";
+  canvas = document.createElement("canvas");
+  $uploadForm = $("#sp-puzzleImage");
+  $resetBtn = $("#sp-reset");
+  $hintBtn = $("#sp-hint").first();
+  isShuffling = false;
 
   constructor() {
     // initialize the board (for now, using numbers instead of images)
+    this.#addCellDOM();
+
+    // start with overlay hidden
+    this.$overlay.css("display", "none");
+
+    // load the default image
+    this.loadImage(this.defaultImageUrl);
+
+    this.#addEventListeners();
+  }
+  
+  // game initialization methods
+  #addCellDOM() {
     let boardString = "";
     for (let n = 1; n <= 16; n++) {
-      boardString += `<div class="sp-slide" data-pos=${n} data-target-pos=${n}>${n}</div>`;
+      boardString += `<div class="sp-slide" data-pos=${n} data-target-pos=${n}></div>`;
     }
     $(".sp-grid").html(boardString);
-    
+
     // initialize the empty cell
     this.setEmptyCell(16);
 
     // initialize the cells
     this.$cells = $(".sp-slide");
-    this.#addEventListeners();
-  }
-  
-  // game initialization methods
-  #addEventListeners() {
+    
     const game = this;
     this.$cells.on("click", function () {
       game.move($(this));
     });
+  }
+
+
+  #addEventListeners() {
+    const game = this;
+
+    this.$uploadForm.on("change", function () {
+      game.#onFileUpload();
+    });
+
+    this.$resetBtn.on("click", function () {
+      game.loadImage(game.img.src);
+    });
+
+    this.$hintBtn.on("click", function () {
+      console.log("click")
+      game.toggleHintMode();
+    });
+  }
+
+  #onFileUpload() {
+
+    const file = this.$uploadForm[0].files[0]
+    this.imageFileType = file.type;
+
+    URL.revokeObjectURL(this.img.src);
+    const imgPath = URL.createObjectURL(file);
+
+    this.loadImage(imgPath);
   }
 
   setEmptyCell(pos) {
@@ -62,13 +110,13 @@ class SlidingPic {
     if (
       pos == emptyPos - 1 ||
       pos == emptyPos + 1 ||
-      pos == emptyPos - 4 ||
-      pos == emptyPos + 4
+      pos == emptyPos - this.gridCols ||
+      pos == emptyPos + this.gridCols
     ) {
       // edge case: prevent +/- 1 from working when cells are on diff rows
       if (
-        !(pos % 4 == 0 && emptyPos % 4 == 1) &&
-        !(pos % 4 == 1 && emptyPos % 4 == 0)
+        !(pos % this.gridCols == 0 && emptyPos % this.gridCols == 1) &&
+        !(pos % this.gridCols == 1 && emptyPos % this.gridCols == 0)
       )
         return true;
     }
@@ -128,6 +176,24 @@ class SlidingPic {
     game.$emptyCell.before($cell);
     $temp.before(game.$emptyCell);
     $temp.remove();
+
+    this.#afterCellMoved();
+  }
+
+  #afterCellMoved() {
+    // check to see if puzzle is complete
+    if (!this.isShuffling && this.#isComplete()) {
+      this.showOverlay("You win!");
+    }
+  }
+
+  reset() {
+    clearInterval(this.shuffler)
+    this.$cells.removeClass("noanim");
+    this.isShuffling = false;
+    this.$grid.empty();
+    this.hideOverlay();
+    this.#addCellDOM();
   }
 
   shuffle() {
@@ -136,13 +202,14 @@ class SlidingPic {
 
     // disable animation
     this.$cells.addClass("noanim");
-
+    this.isShuffling = true;
     // show message overlay
     this.showOverlay("Shuffling...");
-    const shuffler = setInterval(() => {
+    this.shuffler = setInterval(() => {
       if (moves >= maxMoves) {
-        clearInterval(shuffler);
+        clearInterval(this.shuffler);
         this.$cells.removeClass("noanim");
+        this.isShuffling = false;
         this.hideOverlay();
         return;
       }
@@ -158,9 +225,70 @@ class SlidingPic {
           moved = true;
         }
       }
-    }, 5);
+    }, 2);
 
   }
+
+  // image manipulation
+  #getImageObj(url) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.src = url;
+    })
+  }
+
+  loadImage(url) {
+    this.#getImageObj(url).then(img => {
+      this.img = img;
+      this.squareSize = Math.min(img.width, img.height) / this.gridCols;
+      this.canvas.width = this.squareSize;
+      this.canvas.height = this.squareSize;
+
+      // reset the board, apply backgrounds, and reshuffle
+      this.reset();
+      this.$cells.each((i, cell) => {
+        const pos = parseInt($(cell).attr("data-pos")) - 1;
+        $(cell).css("background-image", this.getSquareBg(pos));
+      });
+      this.shuffle();
+    })
+  }
+
+  getSquareBg(idx) {
+    const ctx = this.canvas.getContext("2d");
+    const x = (idx % this.gridCols) * this.squareSize;
+    const y = Math.floor(idx / this.gridCols) * this.squareSize;
+
+    ctx.drawImage(this.img, x, y, this.squareSize, this.squareSize, 0, 0, this.squareSize, this.squareSize);
+
+    return `url(${this.canvas.toDataURL(this.imageFileType)})`;
+  }
+
+  // hints toggle
+  isHintMode() {
+    return this.$grid.hasClass("sp-show-hints");
+  }
+
+  toggleHintMode(desired = undefined) {
+    this.$grid.toggleClass("sp-show-hints");
+    this.$hintBtn.toggleClass("enabled");
+  }
+
+  // check if complete
+  #isComplete() {
+    let complete = true;
+    this.$cells.each(function() {
+      const $cell = $(this);
+      const pos = parseInt($cell.attr("data-pos"));
+      const targetPos = parseInt($cell.attr("data-target-pos"));
+      if (pos != targetPos)
+        complete = false;
+    });
+    return complete;
+  }
+
+
 }
 
 // create and start the game

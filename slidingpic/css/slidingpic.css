@@ -5,7 +5,6 @@
   --border-color: hsl(264, 29%, 15%);
 }
 
-
 .sp-game {
   display: flex;
   flex-direction: column;
@@ -39,23 +38,36 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(20, 24, 35, .8);
+  background-color: rgba(20, 24, 35, 0.8);
   font-family: "Permanent Marker", cursive;
   font-size: min(6.5vw, 3rem);
   opacity: 0;
 }
 
 .sp-slide {
+  /* box-sizing: content-box; */
   font-size: min(calc(9.5vw - 0px), 4.399rem);
   height: 2.5em;
   width: 2.5em;
   background: hsl(224, 27%, 12%);
+  background-size: cover;
+  background-repeat: no-repeat;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  /* border: 2px solid var(--border-color); */
+  /* align-items: center;
+  justify-content: center; */
+  padding: 4% 8%;
+  border: 1px solid var(--border-color);
   transition: transform 0.3s;
   user-select: none;
+
+
+  text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black;
+}
+
+.sp-show-hints .sp-slide::before {
+  content: attr(data-target-pos);
+
+  font-size: .6em;
 }
 
 .sp-slide.noanim {
@@ -77,6 +89,35 @@
 
 .sp-slide.empty {
   background: transparent;
+  background-size: 0 0;
   /* border: 2px solid var(--border-color); */
+  text-shadow: none;
   color: transparent;
+}
+
+.sp-btn {
+  -webkit-appearance: none;
+  font-size: 1rem;
+  font-family: "Orbitron", sans-serif;
+  padding: .35rem .8rem;
+  border-radius: .25rem;
+  background: var(--border-color);
+  color: white;
+  border: 2px solid var(--button-color);
+  cursor: pointer;
+  box-shadow: 0 6px var(--bg-color);
+  transition: transform 0.1s ease-in-out;
+  margin: 0;
+  outline: none;
+}
+
+.sp-btn.enabled, .sp-btn:active {
+  /* font-weight: bold; */
+  background: var(--button-color);
+  box-shadow: 0 0 12px var(--button-color), 0 5px var(--bg-color);
+  transform: translateY(2px);
+}
+
+input[type=file] {
+  display: none;
 }
