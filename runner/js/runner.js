@@ -54,11 +54,12 @@ class RunnerGame {
     msg: new TextComponent(this, "", 36, "Consolas", 40, 50, "white"),
   }
 
-  $playBtn = $("<button>Play</button>");
+  $playBtn = $("<button class='r-btn'>Start Game</button>");
 
   constructor() {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+    this.canvas.innerText = "Your browser does not support the canvas element.";
     this.#loadImages();
     this.#loadSounds();
 
