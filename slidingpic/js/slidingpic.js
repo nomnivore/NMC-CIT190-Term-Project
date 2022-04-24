@@ -89,7 +89,7 @@ class SlidingPic {
   showOverlay(text="") {
     this.setOverlayText(text);
     this.$overlay.css("display", "flex");
-    this.$overlay.animate({opacity: 1}, 500);
+    this.$overlay.stop().animate({opacity: 1}, 100);
   }
 
   setOverlayText(text) {
@@ -97,7 +97,7 @@ class SlidingPic {
   }
 
   hideOverlay() {
-    this.$overlay.animate({opacity: 0}, 500, () => {
+    this.$overlay.stop().animate({opacity: 0}, 500, () => {
 
       this.$overlay.css("display", "none");
     })
@@ -294,4 +294,4 @@ class SlidingPic {
 // create and start the game
 
 const game = new SlidingPic();
-game.shuffle();
+// game.shuffle();
