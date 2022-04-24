@@ -1,3 +1,4 @@
+// meta classes that assist with loading media
 class ImageMeta {
   constructor(url, width, height) {
     this.url = `media/${url}.png`;
@@ -13,6 +14,7 @@ class SoundMeta {
   }
 }
 
+// main game class
 class RunnerGame {
   height = 400;
   width = 700;
@@ -72,6 +74,7 @@ class RunnerGame {
   }
   
 
+  // private methods
   #loadImages() {
     const numImages = Object.keys(this.images).length;
     let numLoaded = 0;
@@ -184,6 +187,7 @@ class RunnerGame {
     this.interval = setInterval(this.update.bind(this), 20);
   }
 
+  // main game loop
   update() {
     this.frameNo += 1;
     this.clearScreen();
@@ -211,20 +215,6 @@ class RunnerGame {
     } else {
       this.player.speedX = 0;
     }
-
-    // // keep piece within bounds
-    // if (this.player.x < 0) {
-    //   this.player.x = 0;
-    // } else if (this.player.x > this.width - this.player.width) {
-    //   this.player.x = this.width - this.player.width;
-    // }
-    // if (this.player.y < this.bounds.top) {
-    //   console.log("out of bounds top");
-    //   this.player.y = this.bounds.top;
-    // } else if (this.player.y > this.bounds.bottom - this.player.height) {
-    //   console.log("out of bounds bottom");
-    //   this.player.y = this.bounds.bottom - this.player.height;
-    // }
 
     // create new cars
     if (this.frameNo == 1 || this.everyInterval(55)) {
@@ -296,6 +286,7 @@ class RunnerGame {
   }
 }
 
+// game/UI component classes
 class CarComponent {
   constructor(game, imgMeta, x, y, speedX=0, speedY=0, isPlayer=false) {
     this.game = game;
@@ -357,4 +348,8 @@ class TextComponent {
 }
 
 
-game = new RunnerGame();
+// start the game
+$(function() {
+  const game = new RunnerGame();
+
+})

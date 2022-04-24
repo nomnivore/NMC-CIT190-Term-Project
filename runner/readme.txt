@@ -17,7 +17,7 @@ rounded/oval bounding box, that would be better overall.
 
 ## Plans for future releases
 Some ideas for future updates:
-    - Display high score, and display that score on the game screen or page
+    - Track high score, and display that score on the game screen or page
     - Add on-screen controls or support additional control schemes for keyboards
         without traditional arrow keys
     - Add speed or density modifiers that increase the game's difficulty as you progress
