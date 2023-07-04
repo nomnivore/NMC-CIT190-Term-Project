@@ -1,5 +1,5 @@
 class SdApi {
-  host = "https://sugoku.herokuapp.com";
+  host = "https://sugoku.onrender.com";
 
   constructor() {}
 
